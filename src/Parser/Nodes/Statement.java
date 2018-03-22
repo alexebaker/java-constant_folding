@@ -11,7 +11,7 @@ import java.util.Vector;
 
 public class Statement extends ASTNode {
     private ASTNode expr;
-    private Vector<ASTNode> stmts;
+    private ASTNode block;
 
     public Statement() {
         super();
@@ -27,12 +27,12 @@ public class Statement extends ASTNode {
         return expr;
     }
 
-    public void addStmt(ASTNode stmt) {
-        stmts.add(stmt);
+    public void setBlock(ASTNode block) {
+        this.block = block;
     }
 
-    public Vector<ASTNode> getStmts() {
-        return stmts;
+    public ASTNode getBlock() {
+        return block;
     }
 
     @Override
@@ -62,11 +62,7 @@ public class Statement extends ASTNode {
         if (tr.peek().getValue().equals("{")) {
             tr.read();
 
-            if (!tr.peek().getValue().equals("}")) {
-                while (Statement.beginsStmt(tr.peek())) {
-                    stmt.addStmt(Statement.parse(cs, st));
-                }
-            }
+            stmt.setBlock(Block.parse(cs, st));
 
             if (tr.peek().getValue().equals("}")) {
                 tr.read();
