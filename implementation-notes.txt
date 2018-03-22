@@ -1,0 +1,32 @@
+IMPLEMENTATION NOTES FOR SPIKE4
+
+STAGING THE DEVELOPMENT
+
+ - spike4 involves several substantial changes involving a significant
+   development effort and time.  Implementors may wish to consider
+   this approximate timeline as guidance:
+
+   = Preparation (0.5-1 days): Skimming the spec and preparing a
+     spike4 framework from the existing spike3.  Second spec reading.
+
+   = Control statements (1-1.5 days): Implementing IF_STMT and
+     WHILE_STMT -- in absence of any other spike4 elements -- is
+     perhaps the easiest place to start.
+
+   = Recursive BLOCKS (1-3 days, depending how suitable is the spike3
+     design): Creating a symbol table per block, and mechanisms to
+     perform nearest-enclosing-scope symbol lookups while walking the
+     AST.
+
+   = Type labeling (2-3 days): Actually getting the tree labeled often
+     involves significant rework of tree nodes and type system
+     internals.  As the type labeling design begins to settle,
+     development of constant folding will need to commence.
+
+   = Constant folding (1-3 days): Once the framework for tree
+     traversing and type labeling starts to be believable, constant
+     folding is sometimes easier.  The resulting 'tree surgeries',
+     however, can create expensive bugs unless the implementor is
+     clean and careful.
+
+   = Aggregate debugging time (1-1000 days): Always Be Cleaning.
