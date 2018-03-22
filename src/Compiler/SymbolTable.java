@@ -11,10 +11,16 @@ import java.util.TreeSet;
 public class SymbolTable {
     private HashMap<Token, VDI> symbolTable;
     private boolean inDef;
+    private SymbolTable parent;
 
     public SymbolTable() {
+        this(null);
+    }
+
+    public SymbolTable(SymbolTable parent) {
         symbolTable = new HashMap<>();
         inDef = false;
+        this.parent = parent;
     }
 
     public boolean isInDef() {

@@ -16,10 +16,14 @@ public class Block extends ASTNode {
     private SymbolTable symbolTable;
 
     public Block() {
+        this(null);
+    }
+
+    public Block(SymbolTable st) {
         super();
         defs = new Vector<>();
         stmts = new Vector<>();
-        symbolTable = new SymbolTable();
+        symbolTable = new SymbolTable(st);
     }
 
     public void addDef(ASTNode def) {
@@ -73,7 +77,7 @@ public class Block extends ASTNode {
 
     public static ASTNode parse(CompilerState cs, SymbolTable st) {
         TokenReader tr = cs.getTr();
-        Block block = new Block();
+        Block block = new Block(st);
 
         block.getSymbolTable().setInDef(true);
         while (Def.beginsDef(tr.peek())) {
