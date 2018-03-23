@@ -3,11 +3,8 @@ package Parser.Nodes;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
 import Errors.SyntaxError;
-import Parser.Operators.PreunOp;
 import Tokenizer.TokenReader;
-import Tokenizer.Tokens.Token;
 
-import java.util.Vector;
 
 public class WhileStmt extends ASTNode {
     private ASTNode expr;
@@ -37,7 +34,11 @@ public class WhileStmt extends ASTNode {
     @Override
     public String getASTR(int indentDepth) {
         StringBuilder str = new StringBuilder("");
-        String indentStr = super.getASTR(indentDepth);
+        str.append(super.getASTR(indentDepth));
+        str.append("while (");
+        str.append(expr.getASTR(0));
+        str.append(")\n");
+        str.append(stmt.getASTR(indentDepth+1));
         return str.toString();
     }
 
@@ -48,6 +49,7 @@ public class WhileStmt extends ASTNode {
             tr.read();
 
             if (tr.peek().getValue().equals("(")) {
+                tr.read();
                 whileStmt.setExpr(Expr.parse(cs, st));
             }
             else {
@@ -55,6 +57,7 @@ public class WhileStmt extends ASTNode {
             }
 
             if (tr.peek().getValue().equals(")")) {
+                tr.read();
                 whileStmt.setStmt(Statement.parse(cs, st));
             }
             else {

@@ -47,9 +47,9 @@ public class Block extends ASTNode {
     }
 
     @Override
-    public String getVSR() {
+    public String getVSR(int indentDepth) {
         StringBuilder str = new StringBuilder("");
-        str.append(symbolTable);
+        str.append(symbolTable.getVSR(indentDepth));
         str.append("\n");
         return str.toString();
     }

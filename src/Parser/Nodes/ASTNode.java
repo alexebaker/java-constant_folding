@@ -10,13 +10,13 @@ public abstract class ASTNode {
         return str.toString();
     }
 
-    public String getVSR() {
-        return "";
+    public String getVSR(int indentDepth) {
+        return getASTR(indentDepth);
     }
 
     public String getBOFPIF() {
         StringBuilder str = new StringBuilder("");
-        str.append(getVSR());
+        str.append(getVSR(0));
         str.append(getASTR(0));
         return str.toString();
     }

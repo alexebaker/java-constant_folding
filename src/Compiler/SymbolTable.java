@@ -31,16 +31,25 @@ public class SymbolTable {
         this.inDef = inDef;
     }
 
-    public void addDeclaration(Token name, ASTNode type) {
-       symbolTable.put(name, new VDI(name, "unused", type));
+    public boolean addDeclaration(Token name, ASTNode type) {
+        if (!symbolTable.containsKey(name)) {
+            symbolTable.put(name, new VDI(name, "unused", type));
+            return true;
+        }
+        return false;
     }
 
     public void removeDeclaration(Token name) {
-        symbolTable.remove(name);
+        if (symbolTable.containsKey(name)) {
+            symbolTable.remove(name);
+        }
+        else if (parent != null) {
+            parent.removeDeclaration(name);
+        }
     }
 
     public boolean alreadyDeclared(Token name) {
-        return symbolTable.containsKey(name);
+        return symbolTable.containsKey(name) || (parent != null && parent.alreadyDeclared(name));
     }
 
     public void setUsed(Token name) {
@@ -51,7 +60,11 @@ public class SymbolTable {
                 if (vdi.getType() != null) {
                     vdi.setStatus("okay");
                 }
-            } else {
+            }
+            else if (parent != null && parent.alreadyDeclared(name)) {
+                parent.setUsed(name);
+            }
+            else {
                 addDeclaration(name, null);
                 vdi = symbolTable.get(name);
                 vdi.setStatus("undeclared");
@@ -59,13 +72,22 @@ public class SymbolTable {
         }
     }
 
-    @Override
-    public String toString() {
+    public String getVSR(int indentDepth) {
         StringBuilder str = new StringBuilder("");
+        StringBuilder indentStr = new StringBuilder("");
+        for (int idx = 0; idx < indentDepth; idx++) {
+            indentStr.append("  ");
+        }
         for (Token name : new TreeSet<>(symbolTable.keySet())) {
+            str.append(indentStr);
             str.append(symbolTable.get(name));
             str.append("\n");
         }
         return str.toString();
+    }
+
+    @Override
+    public String toString() {
+        return getVSR(0);
     }
 }

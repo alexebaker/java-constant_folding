@@ -25,10 +25,10 @@ public class Program extends ASTNode {
     }
 
     @Override
-    public String getVSR() {
+    public String getVSR(int indentDepth) {
         StringBuilder str = new StringBuilder("");
         for (ASTNode block : blocks) {
-            str.append(block.getVSR());
+            str.append(block.getVSR(0));
         }
         return str.toString();
     }

@@ -3,11 +3,8 @@ package Parser.Nodes;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
 import Errors.SyntaxError;
-import Parser.Operators.PreunOp;
 import Tokenizer.TokenReader;
-import Tokenizer.Tokens.Token;
 
-import java.util.Vector;
 
 public class OptElse extends ASTNode {
     private ASTNode stmt;
@@ -27,7 +24,9 @@ public class OptElse extends ASTNode {
     @Override
     public String getASTR(int indentDepth) {
         StringBuilder str = new StringBuilder("");
-        String indentStr = super.getASTR(indentDepth);
+        str.append(super.getASTR(indentDepth));
+        str.append("else\n");
+        str.append(stmt.getASTR(indentDepth+1));
         return str.toString();
     }
 

@@ -65,10 +65,7 @@ public class Def extends ASTNode {
         while (IdentifierToken.isToken(tr.peek())) {
             Identifier varName = (Identifier) Identifier.parse(cs, st);
             def.addVarName(varName);
-            if (!st.alreadyDeclared(varName.getToken())) {
-                st.addDeclaration(varName.getToken(), def.getTypeSpec());
-            }
-            else {
+            if (!st.addDeclaration(varName.getToken(), def.getTypeSpec())) {
                 throw new SyntaxError(varName.getToken(), "Undeclared Variable");
             }
 

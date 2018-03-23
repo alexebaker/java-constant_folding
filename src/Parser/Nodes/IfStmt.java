@@ -3,11 +3,8 @@ package Parser.Nodes;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
 import Errors.SyntaxError;
-import Parser.Operators.PreunOp;
 import Tokenizer.TokenReader;
-import Tokenizer.Tokens.Token;
 
-import java.util.Vector;
 
 public class IfStmt extends ASTNode {
     private ASTNode expr;
@@ -47,7 +44,14 @@ public class IfStmt extends ASTNode {
     @Override
     public String getASTR(int indentDepth) {
         StringBuilder str = new StringBuilder("");
-        String indentStr = super.getASTR(indentDepth);
+        str.append(super.getASTR(indentDepth));
+        str.append("if (");
+        str.append(expr.getASTR(0));
+        str.append(")\n");
+        str.append(stmt.getASTR(indentDepth+1));
+        if (optElse != null) {
+            str.append(optElse.getASTR(indentDepth));
+        }
         return str.toString();
     }
 
@@ -58,6 +62,7 @@ public class IfStmt extends ASTNode {
             tr.read();
 
             if (tr.peek().getValue().equals("(")) {
+                tr.read();
                 ifStmt.setExpr(Expr.parse(cs, st));
             }
             else {
@@ -65,6 +70,7 @@ public class IfStmt extends ASTNode {
             }
 
             if (tr.peek().getValue().equals(")")) {
+                tr.read();
                 ifStmt.setStmt(Statement.parse(cs, st));
                 ifStmt.setOptElse(OptElse.parse(cs, st));
             }

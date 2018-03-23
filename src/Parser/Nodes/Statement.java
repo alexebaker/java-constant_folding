@@ -7,16 +7,19 @@ import Parser.Operators.PreunOp;
 import Tokenizer.TokenReader;
 import Tokenizer.Tokens.Token;
 
-import java.util.Vector;
 
 public class Statement extends ASTNode {
     private ASTNode expr;
     private ASTNode block;
+    private ASTNode ifStmt;
+    private ASTNode whileStmt;
 
     public Statement() {
         super();
         expr = null;
-        stmts = new Vector<>();
+        block = null;
+        ifStmt = null;
+        whileStmt = null;
     }
 
     public void setExpr(ASTNode expr) {
@@ -35,6 +38,22 @@ public class Statement extends ASTNode {
         return block;
     }
 
+    public void setIfStmt(ASTNode ifStmt) {
+        this.ifStmt = ifStmt;
+    }
+
+    public ASTNode getIfStmt() {
+        return ifStmt;
+    }
+
+    public void setWhileStmt(ASTNode whileStmt) {
+        this.whileStmt = whileStmt;
+    }
+
+    public ASTNode getWhileStmt() {
+        return whileStmt;
+    }
+
     @Override
     public String getASTR(int indentDepth) {
         StringBuilder str = new StringBuilder("");
@@ -44,11 +63,22 @@ public class Statement extends ASTNode {
             str.append(expr.getASTR(indentDepth));
             str.append(";\n");
         }
+        else if (ifStmt != null) {
+            str.append(indentStr);
+            str.append(ifStmt.getASTR(indentDepth));
+            str.append("\n");
+        }
+        else if (whileStmt != null) {
+            str.append(indentStr);
+            str.append(whileStmt.getASTR(indentDepth));
+            str.append("\n");
+        }
         else {
             str.append(indentStr);
             str.append("{\n");
-            for (ASTNode stmt : stmts) {
-                str.append(stmt.getASTR(indentDepth+1));
+            if (block != null) {
+                str.append(block.getVSR(indentDepth+1));
+                str.append(block.getASTR(indentDepth+1));
             }
             str.append(indentStr);
             str.append("}\n");
@@ -70,6 +100,12 @@ public class Statement extends ASTNode {
             else {
                 throw new SyntaxError(tr.read(), "}");
             }
+        }
+        else if (tr.peek().getValue().equals("if")) {
+            stmt.setIfStmt(IfStmt.parse(cs, st));
+        }
+        else if (tr.peek().getValue().equals("while")) {
+            stmt.setWhileStmt(WhileStmt.parse(cs, st));
         }
         else {
             try {
@@ -101,6 +137,6 @@ public class Statement extends ASTNode {
     }
 
     public static boolean beginsStmt(String str) {
-        return PrimaryExpr.beginsPrimaryExpr(str) || str.equals("{") || PreunOp.isOp(str);
+        return PrimaryExpr.beginsPrimaryExpr(str) || str.equals("{") || PreunOp.isOp(str) || str.equals("if") || str.equals("while");
     }
 }
