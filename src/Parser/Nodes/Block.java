@@ -21,7 +21,6 @@ public class Block extends ASTNode {
     }
 
     public Block(SymbolTable st) {
-        super();
         defs = new Vector<>();
         stmts = new Vector<>();
         symbolTable = new SymbolTable(st);
@@ -113,13 +112,28 @@ public class Block extends ASTNode {
     public Type getNodeType() {
         if (getType() == null) {
             for (ASTNode def : defs) {
-                def.getNodeType();
+                if (def != null) def.getNodeType();
             }
             for (ASTNode stmt : stmts) {
-                stmt.getNodeType();
+                if (stmt != null) stmt.getNodeType();
             }
         }
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        for (int idx = 0; idx < defs.size(); idx++) {
+            ASTNode def = defs.get(idx);
+            defs.remove(idx);
+            def = def.foldConstants();
+            defs.add(idx, def);
+        }
+        for (int idx = 0; idx < stmts.size(); idx++) {
+            ASTNode stmt = stmts.get(idx);
+            stmts.remove(idx);
+            stmt = stmt.foldConstants();
+            stmts.add(idx, stmt);
+        }
+        return this;
+    }
 }

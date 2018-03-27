@@ -25,4 +25,7 @@ public class RelExpr extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        return this;
+    }
 }

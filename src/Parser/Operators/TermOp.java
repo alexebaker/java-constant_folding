@@ -1,5 +1,6 @@
 package Parser.Operators;
 
+import Parser.Nodes.ASTNode;
 import Tokenizer.Tokens.Token;
 import Types.PrimType;
 import Types.Type;
@@ -31,6 +32,13 @@ public class TermOp extends Operator {
             }
         }
         return getType();
+    }
+
+    @Override
+    public ASTNode foldConstants() {
+        setLhs(getLhs().foldConstants());
+        setRhs(getRhs().foldConstants());
+        return this;
     }
 
     public static boolean isOp(Token token) {

@@ -93,4 +93,12 @@ public class IfStmt extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        expr = expr.foldConstants();
+        stmt = stmt.foldConstants();
+        if (optElse != null) {
+            optElse = optElse.foldConstants();
+        }
+        return this;
+    }
 }

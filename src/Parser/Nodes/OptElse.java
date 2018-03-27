@@ -50,4 +50,10 @@ public class OptElse extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        if (stmt != null) {
+            stmt = stmt.foldConstants();
+        }
+        return this;
+    }
 }

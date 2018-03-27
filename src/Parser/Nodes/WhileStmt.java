@@ -78,4 +78,9 @@ public class WhileStmt extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        expr = expr.foldConstants();
+        stmt = stmt.foldConstants();
+        return this;
+    }
 }

@@ -71,10 +71,16 @@ public class Program extends ASTNode {
     }
 
     public Type getNodeType() {
-        if (getType() == null) {
+        if (getType() == null && block != null) {
             setType(block.getNodeType());
         }
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        if (block != null) {
+            block = block.foldConstants();
+        }
+        return this;
+    }
 }

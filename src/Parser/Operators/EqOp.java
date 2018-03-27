@@ -1,5 +1,6 @@
 package Parser.Operators;
 
+import Parser.Nodes.ASTNode;
 import Tokenizer.Tokens.Token;
 import Types.PrimType;
 import Types.Type;
@@ -23,6 +24,14 @@ public class EqOp extends Operator {
             }
         }
         return getType();
+    }
+
+    @Override
+    public ASTNode foldConstants() {
+        setLhs(getLhs().foldConstants());
+        setRhs(getRhs().foldConstants());
+        //apply op
+        return this;
     }
 
     public static boolean isOp(Token token) {

@@ -81,4 +81,13 @@ public class AsgnExpr extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        if (condExpr != null) {
+            condExpr = condExpr.foldConstants();
+            if (asgnExpr != null) {
+                asgnExpr = asgnExpr.foldConstants();
+            }
+        }
+        return this;
+    }
 }

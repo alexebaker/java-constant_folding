@@ -52,6 +52,7 @@ public abstract class ASTNode {
     }
 
     public abstract Type getNodeType();
+    public abstract ASTNode foldConstants();
 
     @Override
     public String toString() {

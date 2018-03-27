@@ -46,4 +46,7 @@ public class PrimaryExpr extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        return this;
+    }
 }

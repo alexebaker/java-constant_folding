@@ -68,4 +68,13 @@ public class TypeSpec extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        for (int idx = 0; idx < arraySpecs.size(); idx++) {
+            ASTNode arraySpec = arraySpecs.get(idx);
+            arraySpecs.remove(idx);
+            arraySpec = arraySpec.foldConstants();
+            arraySpecs.add(idx, arraySpec);
+        }
+        return this;
+    }
 }

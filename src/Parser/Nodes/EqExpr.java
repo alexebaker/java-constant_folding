@@ -25,4 +25,7 @@ public class EqExpr extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        return this;
+    }
 }

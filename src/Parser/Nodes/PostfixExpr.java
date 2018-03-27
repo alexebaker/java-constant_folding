@@ -6,7 +6,6 @@ import Parser.Operators.PostunOp;
 import Tokenizer.TokenReader;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
-import Types.PointerType;
 import Types.Type;
 
 public class PostfixExpr extends ASTNode {
@@ -95,4 +94,12 @@ public class PostfixExpr extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        if (primaryExpr != null) {
+            primaryExpr = primaryExpr.foldConstants();
+            if (arraySpec != null) arraySpec = arraySpec.foldConstants();
+            if (postfixExpr != null) postfixExpr = postfixExpr.foldConstants();
+        }
+        return this;
+    }
 }

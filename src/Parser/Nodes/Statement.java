@@ -159,4 +159,19 @@ public class Statement extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        if (expr != null) {
+            expr = expr.foldConstants();
+        }
+        else if (ifStmt != null) {
+            ifStmt = ifStmt.foldConstants();
+        }
+        else if (whileStmt != null) {
+            whileStmt = whileStmt.foldConstants();
+        }
+        else if (block != null) {
+            block = block.foldConstants();
+        }
+        return this;
+    }
 }

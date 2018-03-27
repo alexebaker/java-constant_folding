@@ -62,4 +62,8 @@ public class Operator extends ASTNode {
         }
         return getType();
     }
+
+    public ASTNode foldConstants() {
+        return this;
+    }
 }

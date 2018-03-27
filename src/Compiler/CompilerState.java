@@ -53,10 +53,10 @@ public class CompilerState {
     }
 
     public void setAST(ASTNode ast) {
-        this.ast = ast;
+        this.ast = ast.foldConstants();
     }
 
-    public void printBOFPIF() {
+    public void printBOTLPIF() {
         if (ast != null) {
             io.write(ast.getBOTLPIF());
         }

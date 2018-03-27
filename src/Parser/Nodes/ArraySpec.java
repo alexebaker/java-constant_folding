@@ -76,4 +76,10 @@ public class ArraySpec extends ASTNode {
         }
     }
 
+    public ASTNode foldConstants() {
+        if (expr != null) {
+            expr = expr.foldConstants();
+        }
+        return this;
+    }
 }

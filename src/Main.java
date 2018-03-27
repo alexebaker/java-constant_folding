@@ -21,7 +21,7 @@ public class Main {
         LCC lcc = new LCC(cs);
         lcc.compile();
 
-        cs.printBOFPIF();
+        cs.printBOTLPIF();
         cs.printErrors();
 
         cs.getIO().close();

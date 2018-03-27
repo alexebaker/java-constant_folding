@@ -41,4 +41,7 @@ public class Number extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        return this;
+    }
 }

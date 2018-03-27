@@ -90,4 +90,12 @@ public class CondExpr extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        logOrExpr = logOrExpr.foldConstants();
+        if (expr != null && condExpr != null) {
+            expr = expr.foldConstants();
+            condExpr.foldConstants();
+        }
+        return this;
+    }
 }

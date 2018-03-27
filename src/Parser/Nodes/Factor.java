@@ -23,4 +23,7 @@ public class Factor extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        return this;
+    }
 }

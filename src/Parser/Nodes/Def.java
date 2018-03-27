@@ -105,4 +105,8 @@ public class Def extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        typeSpec = typeSpec.foldConstants();
+        return this;
+    }
 }

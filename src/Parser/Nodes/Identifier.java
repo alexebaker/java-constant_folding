@@ -61,4 +61,7 @@ public class Identifier extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        return this;
+    }
 }

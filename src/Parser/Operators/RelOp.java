@@ -1,5 +1,6 @@
 package Parser.Operators;
 
+import Parser.Nodes.ASTNode;
 import Tokenizer.Tokens.Token;
 import Types.PointerType;
 import Types.PrimType;
@@ -24,6 +25,14 @@ public class RelOp extends Operator {
             }
         }
         return getType();
+    }
+
+    @Override
+    public ASTNode foldConstants() {
+        setLhs(getLhs().foldConstants());
+        setRhs(getRhs().foldConstants());
+        // apply op
+        return this;
     }
 
     public static boolean isOp(Token token) {

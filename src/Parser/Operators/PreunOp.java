@@ -1,5 +1,6 @@
 package Parser.Operators;
 
+import Parser.Nodes.ASTNode;
 import Tokenizer.Tokens.Token;
 import Types.PointerType;
 import Types.PrimType;
@@ -31,6 +32,12 @@ public class PreunOp extends Operator {
             }
         }
         return getType();
+    }
+
+    @Override
+    public ASTNode foldConstants() {
+        setRhs(getRhs().foldConstants());
+        return this;
     }
 
     public static boolean isOp(Token token) {

@@ -24,4 +24,7 @@ public class LogOrExpr extends ASTNode {
         return getType();
     }
 
+    public ASTNode foldConstants() {
+        return this;
+    }
 }
