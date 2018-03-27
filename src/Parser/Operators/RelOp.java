@@ -1,10 +1,29 @@
 package Parser.Operators;
 
 import Tokenizer.Tokens.Token;
+import Types.PointerType;
+import Types.PrimType;
+import Types.Type;
+import Types.TypeEnum;
 
 public class RelOp extends Operator {
     public RelOp(Token token) {
         super(token);
+    }
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            Type lhs = getLhs().getNodeType();
+            Type rhs = getRhs().getNodeType();
+            if (lhs != null && rhs != null) {
+                if (PointerType.isType(lhs) || lhs.getTypeEnum() == TypeEnum.SIGNED || lhs.getTypeEnum() == TypeEnum.UNSIGNED) {
+                    if (lhs.equals(rhs)) {
+                        setType(new PrimType(TypeEnum.BOOL));
+                    }
+                }
+            }
+        }
+        return getType();
     }
 
     public static boolean isOp(Token token) {

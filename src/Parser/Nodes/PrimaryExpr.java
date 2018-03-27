@@ -7,6 +7,7 @@ import Tokenizer.TokenReader;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
 import Tokenizer.Tokens.Token;
+import Types.Type;
 
 public class PrimaryExpr extends ASTNode {
     public static ASTNode parse(CompilerState cs, SymbolTable st) throws SyntaxError {
@@ -40,4 +41,9 @@ public class PrimaryExpr extends ASTNode {
     public static boolean beginsPrimaryExpr(String str) {
         return IdentifierToken.isToken(str) || NumberToken.isToken(str) || str.equals("(");
     }
+
+    public Type getNodeType() {
+        return getType();
+    }
+
 }

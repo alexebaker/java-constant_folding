@@ -1,10 +1,28 @@
 package Parser.Operators;
 
 import Tokenizer.Tokens.Token;
+import Types.PrimType;
+import Types.Type;
+import Types.TypeEnum;
 
 public class EqOp extends Operator {
     public EqOp(Token token) {
         super(token);
+    }
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            Type lhs = getLhs().getNodeType();
+            Type rhs = getRhs().getNodeType();
+            if (lhs != null && rhs != null) {
+                if (lhs.equals(rhs) || (lhs.getTypeEnum() == TypeEnum.SIGNED && rhs.getTypeEnum() == TypeEnum.UNSIGNED) || (lhs.getTypeEnum() == TypeEnum.UNSIGNED && rhs.getTypeEnum() == TypeEnum.SIGNED)) {
+                    setType(new PrimType(TypeEnum.BOOL));
+                } else {
+                    //exception
+                }
+            }
+        }
+        return getType();
     }
 
     public static boolean isOp(Token token) {

@@ -6,6 +6,8 @@ import Parser.Operators.PostunOp;
 import Tokenizer.TokenReader;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
+import Types.PointerType;
+import Types.Type;
 
 public class PostfixExpr extends ASTNode {
     private ASTNode primaryExpr;
@@ -34,6 +36,7 @@ public class PostfixExpr extends ASTNode {
     public String getASTR(int indentDepth) {
         StringBuilder str = new StringBuilder("");
         if (primaryExpr != null) {
+            str.append(getTypePrefix());
             str.append("(");
             str.append(primaryExpr.getASTR(indentDepth));
 
@@ -70,6 +73,26 @@ public class PostfixExpr extends ASTNode {
             }
         }
         return node;
+    }
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            if (primaryExpr != null) {
+                Type type = primaryExpr.getNodeType();
+                if (arraySpec != null) {
+                    type = type.deRef();
+                }
+
+                if (postfixExpr != null) {
+                    Type tmp = postfixExpr.getNodeType();
+                    tmp.setOfType(type);
+                    type = tmp;
+                }
+
+                setType(type);
+            }
+        }
+        return getType();
     }
 
 }

@@ -52,17 +52,17 @@ OP: pre unary --, ++; post unary --, ++
 ---
 OP: unary &
 
-  &X => X[]     (But the type X value must be addressable)
+  &X => X[]     (But the typeEnum X value must be addressable)
 
 ---
 OP: post unary []
 
-  P[] => (type that P points to)
+  P[] => (typeEnum that P points to)
 
 ---
 OP: post [expr]
 
-  A[M] => (type that A is array of)
+  A[M] => (typeEnum that A is array of)
 
 ---
 OP: binary assignment =

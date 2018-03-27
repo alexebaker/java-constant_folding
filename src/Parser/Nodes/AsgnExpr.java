@@ -4,6 +4,8 @@ import Errors.SyntaxError;
 import Tokenizer.TokenReader;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
+import Types.PointerType;
+import Types.Type;
 
 public class AsgnExpr extends ASTNode {
     private ASTNode asgnExpr;
@@ -27,6 +29,7 @@ public class AsgnExpr extends ASTNode {
         StringBuilder str = new StringBuilder("");
         if (condExpr != null) {
             if (asgnExpr != null) {
+                str.append(getTypePrefix());
                 str.append("(");
                 str.append(condExpr.getASTR(indentDepth));
                 str.append("=");
@@ -50,4 +53,32 @@ public class AsgnExpr extends ASTNode {
         }
         return asgnExpr;
     }
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            if (asgnExpr == null) {
+                setType(condExpr.getNodeType());
+            }
+            else {
+                Type lhs = condExpr.getNodeType();
+                Type rhs = asgnExpr.getNodeType();
+                if (PointerType.isType(lhs) && PointerType.isType(rhs)) {
+                    if (lhs.equals(rhs)) {
+                        setType(lhs);
+                    }
+                    else {
+                        //exception
+                    }
+                }
+                else if (Types.PrimType.isType(lhs) && Types.PrimType.isType(rhs)) {
+                    setType(lhs);
+                }
+                else {
+                    //exception
+                }
+            }
+        }
+        return getType();
+    }
+
 }

@@ -4,6 +4,7 @@ import Compiler.CompilerState;
 import Compiler.SymbolTable;
 import Errors.SyntaxError;
 import Tokenizer.TokenReader;
+import Types.Type;
 
 
 public class OptElse extends ASTNode {
@@ -41,4 +42,12 @@ public class OptElse extends ASTNode {
         }
         return null;
     }
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            stmt.getNodeType();
+        }
+        return getType();
+    }
+
 }

@@ -13,7 +13,7 @@ c+b;
 a=c;
 c=b;
 // no bool arith
-//../tests/t10.s4i:16:1: Unacceptable type 'bool' for addition or subtraction 'e'
+//../tests/t10.s4i:16:1: Unacceptable typeEnum 'bool' for addition or subtraction 'e'
 //e+1;
 
 // comparisons make bools

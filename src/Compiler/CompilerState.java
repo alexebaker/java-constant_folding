@@ -58,7 +58,7 @@ public class CompilerState {
 
     public void printBOFPIF() {
         if (ast != null) {
-            io.write(ast.getBOFPIF());
+            io.write(ast.getBOTLPIF());
         }
     }
 

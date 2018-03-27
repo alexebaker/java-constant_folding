@@ -4,6 +4,9 @@ import Errors.SyntaxError;
 import Tokenizer.TokenReader;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
+import Types.ArrayType;
+import Types.PointerType;
+import Types.Type;
 
 public class ArraySpec extends ASTNode {
     private ASTNode expr;
@@ -17,10 +20,31 @@ public class ArraySpec extends ASTNode {
     }
 
     @Override
+    public Type getNodeType() {
+        if (getType() == null) {
+            Type type = null;
+            if (expr != null) {
+                if (Types.PrimType.isType(expr.getNodeType())) {
+                    type = new ArrayType(0);
+                }
+                else {
+                    //exception
+                }
+            }
+            else {
+                type = new PointerType();
+            }
+            setType(type);
+        }
+        return getType();
+    }
+
+    @Override
     public String getASTR(int indentDepth) {
         StringBuilder str = new StringBuilder("");
         str.append("[");
         if (expr != null) {
+            //str.append(expr.getTypePrefix());
             str.append(expr.getASTR(indentDepth));
         }
         str.append("]");
@@ -51,4 +75,5 @@ public class ArraySpec extends ASTNode {
             throw new SyntaxError(tr.read(), "[");
         }
     }
+
 }

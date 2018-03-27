@@ -4,6 +4,8 @@ import Errors.SyntaxError;
 import Tokenizer.TokenReader;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
+import Types.Type;
+import Types.TypeEnum;
 
 public class CondExpr extends ASTNode {
     private ASTNode logOrExpr;
@@ -33,6 +35,7 @@ public class CondExpr extends ASTNode {
         StringBuilder str = new StringBuilder("");
         if (logOrExpr != null) {
             if (expr != null && condExpr != null) {
+                str.append(getTypePrefix());
                 str.append("(");
                 str.append(logOrExpr.getASTR(0));
                 str.append("?");
@@ -66,5 +69,25 @@ public class CondExpr extends ASTNode {
         return condExpr;
     }
 
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            if (expr != null && condExpr != null) {
+                if (logOrExpr.getNodeType().getTypeEnum() == TypeEnum.BOOL) {
+                    if (expr.getNodeType().equals(condExpr.getNodeType())) {
+                        setType(expr.getNodeType());
+                    } else {
+                        //excpetion
+                    }
+                } else {
+                    //exception
+                }
+            }
+            else {
+                setType(logOrExpr.getNodeType());
+            }
+        }
+        return getType();
+    }
 
 }

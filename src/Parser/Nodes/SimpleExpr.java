@@ -6,6 +6,7 @@ import Parser.Operators.TermOp;
 import Tokenizer.TokenReader;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
+import Types.Type;
 
 public class SimpleExpr extends ASTNode {
     public static ASTNode parse(CompilerState cs, SymbolTable st) throws SyntaxError {
@@ -19,4 +20,9 @@ public class SimpleExpr extends ASTNode {
         }
         return node;
     }
+
+    public Type getNodeType() {
+        return getType();
+    }
+
 }

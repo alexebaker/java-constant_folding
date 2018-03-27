@@ -4,6 +4,7 @@ import Errors.SyntaxError;
 import Tokenizer.TokenReader;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
+import Types.Type;
 
 import java.util.Vector;
 
@@ -52,4 +53,19 @@ public class TypeSpec extends ASTNode {
         }
         return typeSpec;
     }
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            Type type = typeName.getNodeType();
+            Type tmp;
+            for (ASTNode arraySpec : arraySpecs) {
+                tmp = arraySpec.getNodeType();
+                tmp.setOfType(type);
+                type = tmp;
+            }
+            setType(type);
+        }
+        return getType();
+    }
+
 }

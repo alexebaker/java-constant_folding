@@ -6,6 +6,7 @@ import Tokenizer.TokenReader;
 import Compiler.SymbolTable;
 import Tokenizer.Tokens.EOFToken;
 import Tokenizer.Tokens.Token;
+import Types.Type;
 
 import java.util.Vector;
 
@@ -108,4 +109,17 @@ public class Block extends ASTNode {
         }
         return block;
     }
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            for (ASTNode def : defs) {
+                def.getNodeType();
+            }
+            for (ASTNode stmt : stmts) {
+                stmt.getNodeType();
+            }
+        }
+        return getType();
+    }
+
 }

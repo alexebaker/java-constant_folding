@@ -25,7 +25,7 @@ Java -- that reads a legal LOBO-C block from a filename supplied on
 the command line, or from standard input, then prints, to standard
 output, a variety of information about the LOBO-C code The output
 format for spike4 is called 'BOTLPIF', which stands for
-'block-oriented type-labeled parenthesized infix form'.
+'block-oriented typeEnum-labeled parenthesized infix form'.
 
 ((s4.1.7)) Note that spike4 programs SHOULD include and make use of
 essentially all of the code developed in spike3.  The top-level
@@ -55,8 +55,8 @@ file named 'spike4-' plus a version number, such as 'spike4-10.zip'.
                 spike4-grammar.txt is normative for the spike4 task,
                 unless otherwise noted here
 
-   ((s4.2.2.3)) A separate file, spike4-type-rules.txt, detailing the
-                type propagation rules for spike4.
+   ((s4.2.2.3)) A separate file, spike4-typeEnum-rules.txt, detailing the
+                typeEnum propagation rules for spike4.
 
    ((s4.2.2.4)) implementation-notes.txt: Some suggestions and
                 discussion about implementation choices.  Everything
@@ -166,25 +166,25 @@ dangling-else problem (it attaches to the nearest prior 'if').
 ((s4.4.2.2)) The 'while' statement contains a 'condition' EXPR and a
 'body' STATEMENT, with the typical C semantics.
 
-((s4.4.3)) TYPE PROPAGATION.  spike4 performs 'type propagation' to
+((s4.4.3)) TYPE PROPAGATION.  spike4 performs 'typeEnum propagation' to
 determine the types of operations performed in expressions.  Starting
 with the leaves of the AST, the types of the PRIMARY_EXPRs are
 determined as suggested by (s4.4.5.2.1.2) -- using symbol table lookup
 to determine the types of identifiers, and assuming all numeric
-constants are type signed.
+constants are typeEnum signed.
 
 ((s4.4.3.1)) Then, once all the operands of an operation have been
-type-labeled, type information is propagated to the operation itself,
-according to the rules in spike4-type-rules.txt.  As seen there,
-sometimes the type of the operation is the same as the type of the
-operands, sometimes other rules determine the operation type, and some
+typeEnum-labeled, typeEnum information is propagated to the operation itself,
+according to the rules in spike4-typeEnum-rules.txt.  As seen there,
+sometimes the typeEnum of the operation is the same as the typeEnum of the
+operands, sometimes other rules determine the operation typeEnum, and some
 combinations of operand types may simply be illegal for some
 operations.
 
 ((s4.4.3.2)) Type propagation succeeds complete once all top-level
-EXPR nodes have types.  However, as mentioned, type propagation may
+EXPR nodes have types.  However, as mentioned, typeEnum propagation may
 fail due to illegal operand types.  The spike4 program may exits with
-a non-zero status any time after such a type propagation failure has
+a non-zero status any time after such a typeEnum propagation failure has
 occurred, although LOBO-C compiler implementors are ENCOURAGED to
 develop some method to allow multiple such failures to be detected in
 a single compiler execution.
@@ -196,8 +196,8 @@ operands, and replaces the AST subtree representing the operation with
 the resulting value.  See (s4.4.5.4) and (s4.4.5.5) for examples.
 
 ((s4.4.4.1)) Note that constant folding should probably be performed
-interleaved with type labeling, as suggested by the wording of
-(s4.4.4), rather than expecting to type-label everything before
+interleaved with typeEnum labeling, as suggested by the wording of
+(s4.4.4), rather than expecting to typeEnum-label everything before
 beginning to constant-fold anything.  In particular, we need to
 constant-fold the EXPRs used in OPT_ARRAY_SIZEs before we can even
 know precisely what types we are facing.
@@ -220,12 +220,12 @@ spike3, making two significant changes:
   (s4.2.3.3.2), such indentation cannot be strictly required by spec.
 
   ((s4.4.5.1.2)) Each EXPR element of the ASTR is labeled with its
-  type, as determined by performing type propagation (s4.4.3).  Type
+  typeEnum, as determined by performing typeEnum propagation (s4.4.3).  Type
   labels are presented a compressed form in which spaces are
   eliminated, and the keywords 'signed', 'unsigned', and 'bool' are
   replaced by the single letters 'S', 'U', and 'B' respectively.
 
-  ((s4.4.5.1.2.1)) Then the compressed type is prepended to the
+  ((s4.4.5.1.2.1)) Then the compressed typeEnum is prepended to the
   component it is labeling, preceded by a single space and followed by
   a colon.
 
@@ -255,8 +255,8 @@ the spike4 output is:
 
  ((s4.4.5.2.1.2)) The spike3 BOFPIF ASTR for this example would have
                   been '(b=(a=(c=1)));'.  To turn that into spike4's
-                  BOTLPIF, each PRIMARY_EXPR is labeled with its type,
-                  and each set of parentheses is label with the type
+                  BOTLPIF, each PRIMARY_EXPR is labeled with its typeEnum,
+                  and each set of parentheses is label with the typeEnum
                   that results from the parenthesized operation:
 
      /---/----/---/----/---/----/--------> Following colons
@@ -335,7 +335,7 @@ THE ACTUAL OUTPUT -- added for reference) is:
  constant-folded down to 6 to obtain the actual array size.  Likewise,
  the '4/(1+2)' is constant-folded down to 1 in the line 5 assignment.
 
- ((s4.4.5.4.1.2)) The type of the assignment operation in line 6 is
+ ((s4.4.5.4.1.2)) The typeEnum of the assignment operation in line 6 is
  'B[]' -- pointer to bool -- as are the types of each operand in the
  assignment.
 
@@ -383,7 +383,7 @@ checks for EOF (with appropriate error detection and reporting if
 either of those steps fail).
 
 ((s4.5.2.1)) Once the BLOCK has been parsed, symbol table
-construction, type propagation, and constant folding are performed.
+construction, typeEnum propagation, and constant folding are performed.
 
 ((s4.5.2.2)) If the steps in (s4.5.2.1) are successful, the resulting
 AST is then printed out in BOTLPIF, and then spike4 exits with status
@@ -394,7 +394,7 @@ AST is then printed out in BOTLPIF, and then spike4 exits with status
 ((s4.5.3.1)) spike4 handles parsing and lexical errors in EXPRs in
 essentially the same manner as spike3, as described in (s3.5.3).
 
-((s4.5.3.2)) spike4 handles analysis and type labeling errors in a
+((s4.5.3.2)) spike4 handles analysis and typeEnum labeling errors in a
 manner chosen by the spike4 implementor, given ENCOURAGEMENT to detect
 as many distinct errors as reasonably possible in a single
 compilation.
@@ -404,7 +404,7 @@ compilation.
 ((s4.5.4.1)) When spike4 has completed its processing (see
 (s4.5.2.2)), spike4 exits with an exit status determined as follows:
 
-((s4.5.4.1.1)) If the total number of analysis and type labeling
+((s4.5.4.1.1)) If the total number of analysis and typeEnum labeling
 errors, plus parsing or lexicl error recoveries ((s4.5.3.1) and/or
 (s4.5.3.2)), is more than 9 during this run of spike4, spike4 exits
 with status 10.

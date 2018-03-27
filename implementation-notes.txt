@@ -19,12 +19,12 @@ STAGING THE DEVELOPMENT
      AST.
 
    = Type labeling (2-3 days): Actually getting the tree labeled often
-     involves significant rework of tree nodes and type system
-     internals.  As the type labeling design begins to settle,
+     involves significant rework of tree nodes and typeEnum system
+     internals.  As the typeEnum labeling design begins to settle,
      development of constant folding will need to commence.
 
    = Constant folding (1-3 days): Once the framework for tree
-     traversing and type labeling starts to be believable, constant
+     traversing and typeEnum labeling starts to be believable, constant
      folding is sometimes easier.  The resulting 'tree surgeries',
      however, can create expensive bugs unless the implementor is
      clean and careful.

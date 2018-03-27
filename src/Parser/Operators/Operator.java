@@ -2,6 +2,7 @@ package Parser.Operators;
 
 import Parser.Nodes.ASTNode;
 import Tokenizer.Tokens.Token;
+import Types.Type;
 
 public class Operator extends ASTNode {
     private Token op;
@@ -12,6 +13,10 @@ public class Operator extends ASTNode {
         this.op = op;
         this.lhs = null;
         this.rhs = null;
+    }
+
+    public Token getOp() {
+        return op;
     }
 
     public ASTNode getLhs() {
@@ -34,11 +39,27 @@ public class Operator extends ASTNode {
     public String getASTR(int indentDepth) {
         StringBuilder str = new StringBuilder("");
 
+        str.append(getTypePrefix());
         str.append("(");
-        if (lhs != null) str.append(lhs.getASTR(indentDepth));
+        if (lhs != null) {
+            str.append(lhs.getASTR(indentDepth));
+        }
         str.append(op.getValue());
-        if (rhs != null) str.append(rhs.getASTR(indentDepth));
+        if (rhs != null) {
+            str.append(rhs.getASTR(indentDepth));
+        }
         str.append(")");
         return str.toString();
+    }
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            if (getOp().getValue().equals(",")) {
+                if (rhs != null) {
+                    setType(rhs.getNodeType());
+                }
+            }
+        }
+        return getType();
     }
 }

@@ -6,6 +6,7 @@ import Tokenizer.Tokens.IdentifierToken;
 import Tokenizer.Tokens.Token;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
+import Types.Type;
 
 import java.util.Vector;
 
@@ -65,7 +66,7 @@ public class Def extends ASTNode {
         while (IdentifierToken.isToken(tr.peek())) {
             Identifier varName = (Identifier) Identifier.parse(cs, st);
             def.addVarName(varName);
-            if (!st.addDeclaration(varName.getToken(), def.getTypeSpec())) {
+            if (!st.addDeclaration(varName.getToken(), def.getNodeType())) {
                 throw new SyntaxError(varName.getToken(), "Undeclared Variable");
             }
 
@@ -96,4 +97,12 @@ public class Def extends ASTNode {
     public static boolean beginsDef(String str) {
         return PrimType.isType(str);
     }
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            setType(typeSpec.getNodeType());
+        }
+        return getType();
+    }
+
 }

@@ -6,6 +6,7 @@ import Errors.SyntaxError;
 import Parser.Operators.PreunOp;
 import Tokenizer.TokenReader;
 import Tokenizer.Tokens.Token;
+import Types.Type;
 
 
 public class Statement extends ASTNode {
@@ -139,4 +140,23 @@ public class Statement extends ASTNode {
     public static boolean beginsStmt(String str) {
         return PrimaryExpr.beginsPrimaryExpr(str) || str.equals("{") || PreunOp.isOp(str) || str.equals("if") || str.equals("while");
     }
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            if (expr != null) {
+                setType(expr.getNodeType());
+            }
+            else if (block != null) {
+                setType(block.getNodeType());
+            }
+            else if (ifStmt != null) {
+                setType(ifStmt.getNodeType());
+            }
+            else if (whileStmt != null) {
+                setType(whileStmt.getNodeType());
+            }
+        }
+        return getType();
+    }
+
 }

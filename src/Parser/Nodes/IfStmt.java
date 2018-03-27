@@ -4,6 +4,7 @@ import Compiler.CompilerState;
 import Compiler.SymbolTable;
 import Errors.SyntaxError;
 import Tokenizer.TokenReader;
+import Types.Type;
 
 
 public class IfStmt extends ASTNode {
@@ -44,7 +45,6 @@ public class IfStmt extends ASTNode {
     @Override
     public String getASTR(int indentDepth) {
         StringBuilder str = new StringBuilder("");
-        str.append(super.getASTR(indentDepth));
         str.append("if (");
         str.append(expr.getASTR(0));
         str.append(")\n");
@@ -83,4 +83,14 @@ public class IfStmt extends ASTNode {
         }
         return ifStmt;
     }
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            expr.getNodeType();
+            stmt.getNodeType();
+            if (optElse != null) optElse.getNodeType();
+        }
+        return getType();
+    }
+
 }

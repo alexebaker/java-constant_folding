@@ -6,6 +6,7 @@ import Parser.Operators.PreunOp;
 import Tokenizer.TokenReader;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
+import Types.Type;
 
 public class Factor extends ASTNode {
     public static ASTNode parse(CompilerState cs, SymbolTable st) throws SyntaxError {
@@ -17,4 +18,9 @@ public class Factor extends ASTNode {
         }
         return PostfixExpr.parse(cs, st);
     }
+
+    public Type getNodeType() {
+        return getType();
+    }
+
 }

@@ -5,6 +5,8 @@ import Tokenizer.TokenReader;
 import Tokenizer.Tokens.Token;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
+import Types.Type;
+import Types.TypeEnum;
 
 public class PrimType extends ASTNode {
     private Token token;
@@ -42,4 +44,12 @@ public class PrimType extends ASTNode {
                 return false;
         }
     }
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            setType(new Types.PrimType(TypeEnum.valueOf(token.getValue().toUpperCase())));
+        }
+        return getType();
+    }
+
 }

@@ -4,6 +4,7 @@ import Compiler.CompilerState;
 import Compiler.SymbolTable;
 import Errors.SyntaxError;
 import Tokenizer.TokenReader;
+import Types.Type;
 
 
 public class WhileStmt extends ASTNode {
@@ -34,7 +35,6 @@ public class WhileStmt extends ASTNode {
     @Override
     public String getASTR(int indentDepth) {
         StringBuilder str = new StringBuilder("");
-        str.append(super.getASTR(indentDepth));
         str.append("while (");
         str.append(expr.getASTR(0));
         str.append(")\n");
@@ -69,4 +69,13 @@ public class WhileStmt extends ASTNode {
         }
         return whileStmt;
     }
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            expr.getNodeType();
+            stmt.getNodeType();
+        }
+        return getType();
+    }
+
 }

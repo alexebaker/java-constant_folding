@@ -5,29 +5,28 @@ import Tokenizer.TokenReader;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
 import Tokenizer.Tokens.EOFToken;
-
-import java.util.Vector;
+import Types.Type;
 
 
 public class Program extends ASTNode {
-    private Vector<ASTNode> blocks;
+    private ASTNode block;
 
     public Program() {
-        blocks = new Vector<>();
+        block = null;
     }
 
-    public void addBlock(ASTNode block) {
-        blocks.add(block);
+    public void setBlock(ASTNode block) {
+        this.block = block;
     }
 
-    public Vector<ASTNode> getBlocks() {
-        return blocks;
+    public ASTNode getBlock() {
+        return block;
     }
 
     @Override
     public String getVSR(int indentDepth) {
         StringBuilder str = new StringBuilder("");
-        for (ASTNode block : blocks) {
+        if (block != null) {
             str.append(block.getVSR(0));
         }
         return str.toString();
@@ -36,7 +35,7 @@ public class Program extends ASTNode {
     @Override
     public String getASTR(int indentDepth) {
         StringBuilder str = new StringBuilder("");
-        for (ASTNode block : blocks) {
+        if (block != null) {
             str.append(block.getASTR(0));
         }
         return str.toString();
@@ -45,7 +44,7 @@ public class Program extends ASTNode {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder("");
-        for (ASTNode block : blocks) {
+        if (block != null) {
             str.append(block);
             str.append("\n");
         }
@@ -60,7 +59,7 @@ public class Program extends ASTNode {
     public static ASTNode parse(CompilerState cs, SymbolTable st) {
         TokenReader tr = cs.getTr();
         Program program = new Program();
-        program.addBlock(Block.parse(cs, st));
+        program.setBlock(Block.parse(cs, st));
 
         if (EOFToken.isToken(tr.peek())) {
             tr.read();
@@ -70,4 +69,12 @@ public class Program extends ASTNode {
         }
         return program;
     }
+
+    public Type getNodeType() {
+        if (getType() == null) {
+            setType(block.getNodeType());
+        }
+        return getType();
+    }
+
 }

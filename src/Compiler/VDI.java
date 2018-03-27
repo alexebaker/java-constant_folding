@@ -1,14 +1,15 @@
 package Compiler;
 
-import Parser.Nodes.ASTNode;
 import Tokenizer.Tokens.Token;
+import Types.Type;
+
 
 public class VDI {
     private Token name;
     private String status;
-    private ASTNode type;
+    private Type type;
 
-    public VDI(Token name, String status, ASTNode type) {
+    public VDI(Token name, String status, Type type) {
         this.name = name;
         this.status = status;
         this.type = type;
@@ -18,11 +19,11 @@ public class VDI {
         return name;
     }
 
-    public ASTNode getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(ASTNode type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
@@ -43,7 +44,7 @@ public class VDI {
         str.append(" ");
 
         if (type != null) {
-            str.append(type.getASTR(0));
+            str.append(type);
         }
         else {
             str.append("unknown");
@@ -60,11 +61,11 @@ public class VDI {
     }
 
     public boolean equals(VDI vdi) {
-        return name.equals(vdi.getName()) && status.equals(vdi.getStatus()) && type.getASTR(0).equals(vdi.getType().getASTR(0));
+        return name.equals(vdi.getName()) && status.equals(vdi.getStatus()) && type.equals(vdi.getType());
     }
 
     @Override
     public int hashCode() {
-        return (name.hashCode() * status.hashCode() - type.getASTR(0).hashCode()) * 27;
+        return (name.hashCode() * status.hashCode() - type.hashCode()) * 27;
     }
 }

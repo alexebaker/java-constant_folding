@@ -5,6 +5,7 @@ import Parser.Operators.Operator;
 import Tokenizer.TokenReader;
 import Compiler.CompilerState;
 import Compiler.SymbolTable;
+import Types.Type;
 
 
 public class Expr extends ASTNode {
@@ -24,4 +25,9 @@ public class Expr extends ASTNode {
         }
         return node;
     }
+
+    public Type getNodeType() {
+        return getType();
+    }
+
 }

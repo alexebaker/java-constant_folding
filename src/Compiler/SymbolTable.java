@@ -1,10 +1,10 @@
 package Compiler;
 
-import Parser.Nodes.ASTNode;
 import Tokenizer.Tokens.Token;
+import Types.Type;
+import Types.TypeEnum;
 
 import java.util.HashMap;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 
@@ -23,6 +23,16 @@ public class SymbolTable {
         this.parent = parent;
     }
 
+    public VDI getVDI(Token name) {
+        if (!symbolTable.containsKey(name)) {
+            if (parent != null) {
+                return parent.getVDI(name);
+            }
+            return null;
+        }
+        return symbolTable.get(name);
+    }
+
     public boolean isInDef() {
         return inDef;
     }
@@ -31,7 +41,7 @@ public class SymbolTable {
         this.inDef = inDef;
     }
 
-    public boolean addDeclaration(Token name, ASTNode type) {
+    public boolean addDeclaration(Token name, Type type) {
         if (!symbolTable.containsKey(name)) {
             symbolTable.put(name, new VDI(name, "unused", type));
             return true;
@@ -57,7 +67,7 @@ public class SymbolTable {
             VDI vdi;
             if (symbolTable.containsKey(name)) {
                 vdi = symbolTable.get(name);
-                if (vdi.getType() != null) {
+                if (vdi.getType().getTypeEnum() != TypeEnum.UNDEF) {
                     vdi.setStatus("okay");
                 }
             }
@@ -65,7 +75,7 @@ public class SymbolTable {
                 parent.setUsed(name);
             }
             else {
-                addDeclaration(name, null);
+                addDeclaration(name, new Type());
                 vdi = symbolTable.get(name);
                 vdi.setStatus("undeclared");
             }
