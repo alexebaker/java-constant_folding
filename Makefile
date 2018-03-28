@@ -5,7 +5,7 @@ TEST_SUFFIX:=s4
 
 jar: compile
 	@cp README.md README.txt
-	@jar cvfe spike$(SPIKE).jar Main implementation-notes.txt LICENSE Makefile README.md README.txt sources.txt spike3.txt src/ tests/ -C out .
+	@jar cvfe spike$(SPIKE).jar Main LICENSE Makefile README.md README.txt sources.txt spike$(SPIKE).txt src/ tests/ -C out .
 	@rm README.txt
 
 compile: clean
@@ -24,9 +24,9 @@ test: jar $(TEST_RESULTS)
 
 tests/%.$(TEST_SUFFIX)o: tests/%.$(TEST_SUFFIX)i FORCE
 	@echo -n "[Test $< -> $@ file: "
-	@java -jar spike$(SPIKE).jar $< | diff $@ -
+	@java -jar spike$(SPIKE).jar $< | diff -EZBw $@ -
 	@echo -n "OK, stdin: "
-	@cat $< | java -jar spike$(SPIKE).jar | diff $@ -
+	@cat $< | java -jar spike$(SPIKE).jar | diff -EZBw $@ -
 	@echo "OK]"
 
 .PHONY: FORCE
