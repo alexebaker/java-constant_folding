@@ -1,7 +1,6 @@
 package Parser.Nodes;
 
-import Compiler.CompilerState;
-import Compiler.SymbolTable;
+import Compiler.*;
 import Errors.SyntaxError;
 import Tokenizer.TokenReader;
 import Types.Type;
@@ -23,11 +22,13 @@ public class OptElse extends ASTNode {
     }
 
     @Override
-    public String getASTR(int indentDepth) {
+    public String getASTR(int indentDepth, CompilerState cs) {
         StringBuilder str = new StringBuilder("");
-        str.append(super.getASTR(indentDepth));
-        str.append("else\n");
-        str.append(stmt.getASTR(indentDepth+1));
+        if (stmt != null) {
+            str.append(super.getASTR(indentDepth, cs));
+            str.append("else\n");
+            str.append(stmt.getASTR(indentDepth + 1, cs));
+        }
         return str.toString();
     }
 
@@ -43,9 +44,9 @@ public class OptElse extends ASTNode {
         return null;
     }
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         if (getType() == null) {
-            stmt.getNodeType();
+            stmt.getNodeType(cs);
         }
         return getType();
     }
@@ -55,5 +56,16 @@ public class OptElse extends ASTNode {
             stmt = stmt.foldConstants();
         }
         return this;
+    }
+
+    public Object getValue() {
+        return null;
+    }
+
+    public Location getLocation() {
+        if (stmt != null) {
+            return stmt.getLocation();
+        }
+        return null;
     }
 }

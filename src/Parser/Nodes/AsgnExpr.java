@@ -1,11 +1,12 @@
 package Parser.Nodes;
 
 import Errors.SyntaxError;
+import Errors.TypeError;
 import Tokenizer.TokenReader;
-import Compiler.CompilerState;
-import Compiler.SymbolTable;
+import Compiler.*;
 import Types.PointerType;
 import Types.Type;
+import Types.TypeEnum;
 
 public class AsgnExpr extends ASTNode {
     private ASTNode asgnExpr;
@@ -25,19 +26,19 @@ public class AsgnExpr extends ASTNode {
     }
 
     @Override
-    public String getASTR(int indentDepth) {
+    public String getASTR(int indentDepth, CompilerState cs) {
         StringBuilder str = new StringBuilder("");
         if (condExpr != null) {
             if (asgnExpr != null) {
-                str.append(getTypePrefix());
+                str.append(getTypePrefix(cs));
                 str.append("(");
-                str.append(condExpr.getASTR(indentDepth));
+                str.append(condExpr.getASTR(indentDepth, cs));
                 str.append("=");
-                str.append(asgnExpr.getASTR(indentDepth));
+                str.append(asgnExpr.getASTR(indentDepth, cs));
                 str.append(")");
             }
             else {
-                str.append(condExpr.getASTR(indentDepth));
+                str.append(condExpr.getASTR(indentDepth, cs));
             }
         }
         return str.toString();
@@ -54,27 +55,31 @@ public class AsgnExpr extends ASTNode {
         return asgnExpr;
     }
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         if (getType() == null) {
             if (asgnExpr == null) {
-                setType(condExpr.getNodeType());
+                setType(condExpr.getNodeType(cs));
             }
             else {
-                Type lhs = condExpr.getNodeType();
-                Type rhs = asgnExpr.getNodeType();
+                Type lhs = condExpr.getNodeType(cs);
+                Type rhs = asgnExpr.getNodeType(cs);
                 if (PointerType.isType(lhs) && PointerType.isType(rhs)) {
                     if (lhs.equals(rhs)) {
                         setType(lhs);
                     }
                     else {
-                        //exception
+                        setType(new Type(TypeEnum.UNDEF));
+                        String msg = "Pointers must be of the same type, instead got '" + lhs + "' and '" + rhs + "'";
+                        cs.addError(new TypeError(msg, condExpr.getLocation()));
                     }
                 }
                 else if (Types.PrimType.isType(lhs) && Types.PrimType.isType(rhs)) {
                     setType(lhs);
                 }
                 else {
-                    //exception
+                    setType(new Type(TypeEnum.UNDEF));
+                    String msg = "Type '" + rhs + "' cannot be assigned to type '" + lhs + "'";
+                    cs.addError(new TypeError(msg, condExpr.getLocation()));
                 }
             }
         }
@@ -89,5 +94,22 @@ public class AsgnExpr extends ASTNode {
             }
         }
         return this;
+    }
+
+    public Object getValue() {
+        if (condExpr != null) {
+            if (asgnExpr != null) {
+                return asgnExpr.getValue();
+            }
+            return condExpr.getValue();
+        }
+        return null;
+    }
+
+    public Location getLocation() {
+        if (condExpr != null) {
+            return condExpr.getLocation();
+        }
+        return null;
     }
 }

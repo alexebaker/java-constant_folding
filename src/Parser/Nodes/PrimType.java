@@ -3,8 +3,7 @@ package Parser.Nodes;
 import Errors.SyntaxError;
 import Tokenizer.TokenReader;
 import Tokenizer.Tokens.Token;
-import Compiler.CompilerState;
-import Compiler.SymbolTable;
+import Compiler.*;
 import Types.Type;
 import Types.TypeEnum;
 
@@ -16,7 +15,7 @@ public class PrimType extends ASTNode {
     }
 
     @Override
-    public String getASTR(int indentDepth) {
+    public String getASTR(int indentDepth, CompilerState cs) {
         return token.getValue();
     }
 
@@ -45,7 +44,7 @@ public class PrimType extends ASTNode {
         }
     }
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         if (getType() == null) {
             setType(new Types.PrimType(TypeEnum.valueOf(token.getValue().toUpperCase())));
         }
@@ -54,5 +53,13 @@ public class PrimType extends ASTNode {
 
     public ASTNode foldConstants() {
         return this;
+    }
+
+    public Object getValue() {
+        return null;
+    }
+
+    public Location getLocation() {
+        return token.getLoc();
     }
 }

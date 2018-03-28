@@ -4,8 +4,7 @@ import Errors.SyntaxError;
 import Tokenizer.TokenReader;
 import Tokenizer.Tokens.IdentifierToken;
 import Tokenizer.Tokens.Token;
-import Compiler.CompilerState;
-import Compiler.SymbolTable;
+import Compiler.*;
 import Types.Type;
 
 import java.util.Vector;
@@ -36,8 +35,8 @@ public class Def extends ASTNode {
     }
 
     @Override
-    public String getASTR(int indentDepth) {
-        return typeSpec.getASTR(indentDepth);
+    public String getASTR(int indentDepth, CompilerState cs) {
+        return typeSpec.getASTR(indentDepth, cs);
     }
 
     @Override
@@ -66,7 +65,7 @@ public class Def extends ASTNode {
         while (IdentifierToken.isToken(tr.peek())) {
             Identifier varName = (Identifier) Identifier.parse(cs, st);
             def.addVarName(varName);
-            if (!st.addDeclaration(varName.getToken(), def.getNodeType())) {
+            if (!st.addDeclaration(varName.getToken(), def.getNodeType(cs))) {
                 throw new SyntaxError(varName.getToken(), "Undeclared Variable");
             }
 
@@ -98,9 +97,9 @@ public class Def extends ASTNode {
         return PrimType.isType(str);
     }
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         if (getType() == null) {
-            setType(typeSpec.getNodeType());
+            setType(typeSpec.getNodeType(cs));
         }
         return getType();
     }
@@ -108,5 +107,13 @@ public class Def extends ASTNode {
     public ASTNode foldConstants() {
         typeSpec = typeSpec.foldConstants();
         return this;
+    }
+
+    public Object getValue() {
+        return null;
+    }
+
+    public Location getLocation() {
+        return null;
     }
 }

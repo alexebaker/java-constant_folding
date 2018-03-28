@@ -4,8 +4,7 @@ import Errors.SyntaxError;
 import Tokenizer.Tokens.IdentifierToken;
 import Tokenizer.Tokens.NumberToken;
 import Tokenizer.TokenReader;
-import Compiler.CompilerState;
-import Compiler.SymbolTable;
+import Compiler.*;
 import Tokenizer.Tokens.Token;
 import Types.Type;
 
@@ -42,11 +41,19 @@ public class PrimaryExpr extends ASTNode {
         return IdentifierToken.isToken(str) || NumberToken.isToken(str) || str.equals("(");
     }
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         return getType();
     }
 
     public ASTNode foldConstants() {
         return this;
+    }
+
+    public Object getValue() {
+        return null;
+    }
+
+    public Location getLocation() {
+        return null;
     }
 }

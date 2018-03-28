@@ -1,9 +1,8 @@
 package Parser.Nodes;
 
-import Compiler.CompilerState;
+import Compiler.*;
 import Errors.SyntaxError;
 import Tokenizer.TokenReader;
-import Compiler.SymbolTable;
 import Tokenizer.Tokens.EOFToken;
 import Tokenizer.Tokens.Token;
 import Types.Type;
@@ -47,7 +46,7 @@ public class Block extends ASTNode {
     }
 
     @Override
-    public String getVSR(int indentDepth) {
+    public String getVSR(int indentDepth, CompilerState cs) {
         StringBuilder str = new StringBuilder("");
         str.append(symbolTable.getVSR(indentDepth));
         str.append("\n");
@@ -55,10 +54,10 @@ public class Block extends ASTNode {
     }
 
     @Override
-    public String getASTR(int indentDepth) {
+    public String getASTR(int indentDepth, CompilerState cs) {
         StringBuilder str = new StringBuilder("");
         for (ASTNode stmt : stmts) {
-            if (stmt != null) str.append(stmt.getASTR(indentDepth));
+            if (stmt != null) str.append(stmt.getASTR(indentDepth, cs));
         }
         return str.toString();
     }
@@ -109,13 +108,13 @@ public class Block extends ASTNode {
         return block;
     }
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         if (getType() == null) {
             for (ASTNode def : defs) {
-                if (def != null) def.getNodeType();
+                if (def != null) def.getNodeType(cs);
             }
             for (ASTNode stmt : stmts) {
-                if (stmt != null) stmt.getNodeType();
+                if (stmt != null) stmt.getNodeType(cs);
             }
         }
         return getType();
@@ -135,5 +134,13 @@ public class Block extends ASTNode {
             stmts.add(idx, stmt);
         }
         return this;
+    }
+
+    public Object getValue() {
+        return null;
+    }
+
+    public Location getLocation() {
+        return null;
     }
 }

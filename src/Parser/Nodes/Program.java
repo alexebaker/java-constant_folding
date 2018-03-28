@@ -2,8 +2,7 @@ package Parser.Nodes;
 
 import Errors.SyntaxError;
 import Tokenizer.TokenReader;
-import Compiler.CompilerState;
-import Compiler.SymbolTable;
+import Compiler.*;
 import Tokenizer.Tokens.EOFToken;
 import Types.Type;
 
@@ -24,19 +23,19 @@ public class Program extends ASTNode {
     }
 
     @Override
-    public String getVSR(int indentDepth) {
+    public String getVSR(int indentDepth, CompilerState cs) {
         StringBuilder str = new StringBuilder("");
         if (block != null) {
-            str.append(block.getVSR(0));
+            str.append(block.getVSR(0, cs));
         }
         return str.toString();
     }
 
     @Override
-    public String getASTR(int indentDepth) {
+    public String getASTR(int indentDepth, CompilerState cs) {
         StringBuilder str = new StringBuilder("");
         if (block != null) {
-            str.append(block.getASTR(0));
+            str.append(block.getASTR(0, cs));
         }
         return str.toString();
     }
@@ -70,9 +69,9 @@ public class Program extends ASTNode {
         return program;
     }
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         if (getType() == null && block != null) {
-            setType(block.getNodeType());
+            setType(block.getNodeType(cs));
         }
         return getType();
     }
@@ -82,5 +81,13 @@ public class Program extends ASTNode {
             block = block.foldConstants();
         }
         return this;
+    }
+
+    public Object getValue() {
+        return null;
+    }
+
+    public Location getLocation() {
+        return null;
     }
 }

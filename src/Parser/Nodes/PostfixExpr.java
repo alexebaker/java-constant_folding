@@ -1,12 +1,14 @@
 package Parser.Nodes;
 
 import Errors.SyntaxError;
+import Errors.TypeError;
 import Parser.Operators.Operator;
 import Parser.Operators.PostunOp;
 import Tokenizer.TokenReader;
-import Compiler.CompilerState;
-import Compiler.SymbolTable;
+import Compiler.*;
+import Types.ArrayType;
 import Types.Type;
+import Types.TypeEnum;
 
 public class PostfixExpr extends ASTNode {
     private ASTNode primaryExpr;
@@ -32,19 +34,19 @@ public class PostfixExpr extends ASTNode {
     }
 
     @Override
-    public String getASTR(int indentDepth) {
+    public String getASTR(int indentDepth, CompilerState cs) {
         StringBuilder str = new StringBuilder("");
         if (primaryExpr != null) {
-            str.append(getTypePrefix());
+            str.append(getTypePrefix(cs));
             str.append("(");
-            str.append(primaryExpr.getASTR(indentDepth));
+            str.append(primaryExpr.getASTR(indentDepth, cs));
 
             if (arraySpec != null) {
-                str.append(arraySpec.getASTR(indentDepth));
+                str.append(arraySpec.getASTR(indentDepth, cs));
             }
 
             if (postfixExpr != null) {
-                str.append(postfixExpr.getASTR(indentDepth));
+                str.append(postfixExpr.getASTR(indentDepth, cs));
             }
             str.append(")");
         }
@@ -74,16 +76,26 @@ public class PostfixExpr extends ASTNode {
         return node;
     }
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         if (getType() == null) {
             if (primaryExpr != null) {
-                Type type = primaryExpr.getNodeType();
-                if (arraySpec != null) {
+                Type type = primaryExpr.getNodeType(cs);
+                if (arraySpec != null && type != null) {
                     type = type.deRef();
+                    if (type != null && arraySpec.getValue() != null) {
+                        try {
+                            if (((int) arraySpec.getValue()) >= ((ArrayType) type).getSize()) {
+                                setType(new Type(TypeEnum.UNDEF));
+                                String msg = "Array index out of bounds!";
+                                cs.addError(new TypeError(msg, primaryExpr.getLocation()));
+                                return getType();
+                            }
+                        } catch (ClassCastException e) { }
+                    }
                 }
 
                 if (postfixExpr != null) {
-                    Type tmp = postfixExpr.getNodeType();
+                    Type tmp = postfixExpr.getNodeType(cs);
                     tmp.setOfType(type);
                     type = tmp;
                 }
@@ -101,5 +113,19 @@ public class PostfixExpr extends ASTNode {
             if (postfixExpr != null) postfixExpr = postfixExpr.foldConstants();
         }
         return this;
+    }
+
+    public Object getValue() {
+        if (primaryExpr != null) {
+            primaryExpr.getValue();
+        }
+        return null;
+    }
+
+    public Location getLocation() {
+        if (primaryExpr != null) {
+            return primaryExpr.getLocation();
+        }
+        return null;
     }
 }

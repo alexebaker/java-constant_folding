@@ -2,8 +2,7 @@ package Parser.Nodes;
 
 import Errors.SyntaxError;
 import Tokenizer.TokenReader;
-import Compiler.CompilerState;
-import Compiler.SymbolTable;
+import Compiler.*;
 import Types.Type;
 import Types.TypeEnum;
 
@@ -31,21 +30,21 @@ public class CondExpr extends ASTNode {
     }
 
     @Override
-    public String getASTR(int indentDepth) {
+    public String getASTR(int indentDepth, CompilerState cs) {
         StringBuilder str = new StringBuilder("");
         if (logOrExpr != null) {
             if (expr != null && condExpr != null) {
-                str.append(getTypePrefix());
+                str.append(getTypePrefix(cs));
                 str.append("(");
-                str.append(logOrExpr.getASTR(0));
+                str.append(logOrExpr.getASTR(0, cs));
                 str.append("?");
-                str.append(expr.getASTR(0));
+                str.append(expr.getASTR(0, cs));
                 str.append(":");
-                str.append(condExpr.getASTR(0));
+                str.append(condExpr.getASTR(0, cs));
                 str.append(")");
             }
             else {
-                str.append(logOrExpr.getASTR(0));
+                str.append(logOrExpr.getASTR(0, cs));
             }
         }
         return str.toString();
@@ -70,21 +69,23 @@ public class CondExpr extends ASTNode {
     }
 
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         if (getType() == null) {
             if (expr != null && condExpr != null) {
-                if (logOrExpr.getNodeType().getTypeEnum() == TypeEnum.BOOL) {
-                    if (expr.getNodeType().equals(condExpr.getNodeType())) {
-                        setType(expr.getNodeType());
-                    } else {
+                if (logOrExpr.getNodeType(cs).getTypeEnum() == TypeEnum.BOOL) {
+                    if (expr.getNodeType(cs).equals(condExpr.getNodeType(cs))) {
+                        setType(expr.getNodeType(cs));
+                    }
+                    else {
                         //excpetion
                     }
-                } else {
+                }
+                else {
                     //exception
                 }
             }
             else {
-                setType(logOrExpr.getNodeType());
+                setType(logOrExpr.getNodeType(cs));
             }
         }
         return getType();
@@ -95,7 +96,63 @@ public class CondExpr extends ASTNode {
         if (expr != null && condExpr != null) {
             expr = expr.foldConstants();
             condExpr.foldConstants();
+
+            Object logOrValue = logOrExpr.getValue();
+            if (logOrValue != null) {
+                if (logOrValue instanceof Boolean) {
+                    if ((boolean) logOrValue) {
+                        return expr;
+                    }
+                    else {
+                        return condExpr;
+                    }
+                }
+                else if (logOrValue instanceof Integer) {
+                    if ((int) logOrValue != 0) {
+                        return expr;
+                    }
+                    else {
+                        return condExpr;
+                    }
+                }
+            }
         }
         return this;
+    }
+
+    public Object getValue() {
+        if (logOrExpr != null) {
+            if (expr != null && condExpr != null) {
+                Object boolValue = logOrExpr.getValue();
+                if (boolValue != null) {
+                    if (boolValue instanceof Integer) {
+                        if ((int) boolValue != 0) {
+                            return expr.getValue();
+                        }
+                        else {
+                            return condExpr.getValue();
+                        }
+                    }
+                    else if (boolValue instanceof Boolean) {
+                        if ((boolean) boolValue) {
+                            return expr.getValue();
+                        }
+                        else {
+                            return condExpr.getValue();
+                        }
+                    }
+                }
+
+            }
+            return logOrExpr.getValue();
+        }
+        return null;
+    }
+
+    public Location getLocation() {
+        if (logOrExpr != null) {
+            return logOrExpr.getLocation();
+        }
+        return  null;
     }
 }

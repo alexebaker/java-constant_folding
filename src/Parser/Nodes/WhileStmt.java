@@ -1,7 +1,6 @@
 package Parser.Nodes;
 
-import Compiler.CompilerState;
-import Compiler.SymbolTable;
+import Compiler.*;
 import Errors.SyntaxError;
 import Tokenizer.TokenReader;
 import Types.Type;
@@ -33,12 +32,14 @@ public class WhileStmt extends ASTNode {
     }
 
     @Override
-    public String getASTR(int indentDepth) {
+    public String getASTR(int indentDepth, CompilerState cs) {
         StringBuilder str = new StringBuilder("");
-        str.append("while (");
-        str.append(expr.getASTR(0));
-        str.append(")\n");
-        str.append(stmt.getASTR(indentDepth+1));
+        if (expr != null && stmt != null) {
+            str.append("while (");
+            str.append(expr.getASTR(0, cs));
+            str.append(")\n");
+            str.append(stmt.getASTR(indentDepth + 1, cs));
+        }
         return str.toString();
     }
 
@@ -70,10 +71,10 @@ public class WhileStmt extends ASTNode {
         return whileStmt;
     }
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         if (getType() == null) {
-            expr.getNodeType();
-            stmt.getNodeType();
+            expr.getNodeType(cs);
+            stmt.getNodeType(cs);
         }
         return getType();
     }
@@ -81,6 +82,31 @@ public class WhileStmt extends ASTNode {
     public ASTNode foldConstants() {
         expr = expr.foldConstants();
         stmt = stmt.foldConstants();
+
+        Object exprValue = expr.getValue();
+        if (exprValue != null) {
+            if (exprValue instanceof Boolean) {
+                if (!((boolean) exprValue)) {
+                    return null;
+                }
+            }
+            else if (exprValue instanceof Integer) {
+                if ((int) exprValue == 0) {
+                    return null;
+                }
+            }
+        }
         return this;
+    }
+
+    public Object getValue() {
+        return null;
+    }
+
+    public Location getLocation() {
+        if (expr != null) {
+            expr.getLocation();
+        }
+        return null;
     }
 }

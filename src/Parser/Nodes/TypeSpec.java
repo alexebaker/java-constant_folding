@@ -2,8 +2,7 @@ package Parser.Nodes;
 
 import Errors.SyntaxError;
 import Tokenizer.TokenReader;
-import Compiler.CompilerState;
-import Compiler.SymbolTable;
+import Compiler.*;
 import Types.Type;
 
 import java.util.Vector;
@@ -34,11 +33,13 @@ public class TypeSpec extends ASTNode {
     }
 
     @Override
-    public String getASTR(int indentDepth) {
+    public String getASTR(int indentDepth, CompilerState cs) {
         StringBuilder str = new StringBuilder("");
-        str.append(typeName.getASTR(indentDepth));
-        for (ASTNode arraySpec : arraySpecs) {
-            str.append(arraySpec.getASTR(indentDepth));
+        if (typeName != null) {
+            str.append(typeName.getASTR(indentDepth, cs));
+            for (ASTNode arraySpec : arraySpecs) {
+                str.append(arraySpec.getASTR(indentDepth, cs));
+            }
         }
         return str.toString();
     }
@@ -54,12 +55,12 @@ public class TypeSpec extends ASTNode {
         return typeSpec;
     }
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         if (getType() == null) {
-            Type type = typeName.getNodeType();
+            Type type = typeName.getNodeType(cs);
             Type tmp;
             for (ASTNode arraySpec : arraySpecs) {
-                tmp = arraySpec.getNodeType();
+                tmp = arraySpec.getNodeType(cs);
                 tmp.setOfType(type);
                 type = tmp;
             }
@@ -76,5 +77,16 @@ public class TypeSpec extends ASTNode {
             arraySpecs.add(idx, arraySpec);
         }
         return this;
+    }
+
+    public Object getValue() {
+        return null;
+    }
+
+    public Location getLocation() {
+        if (typeName != null) {
+            return typeName.getLocation();
+        }
+        return null;
     }
 }

@@ -4,8 +4,7 @@ import Errors.SyntaxError;
 import Parser.Operators.Operator;
 import Parser.Operators.PreunOp;
 import Tokenizer.TokenReader;
-import Compiler.CompilerState;
-import Compiler.SymbolTable;
+import Compiler.*;
 import Types.Type;
 
 public class Factor extends ASTNode {
@@ -19,11 +18,19 @@ public class Factor extends ASTNode {
         return PostfixExpr.parse(cs, st);
     }
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         return getType();
     }
 
     public ASTNode foldConstants() {
         return this;
+    }
+
+    public Object getValue() {
+        return null;
+    }
+
+    public Location getLocation() {
+        return null;
     }
 }

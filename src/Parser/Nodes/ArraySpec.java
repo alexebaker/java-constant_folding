@@ -1,12 +1,13 @@
 package Parser.Nodes;
 
 import Errors.SyntaxError;
+import Errors.TypeError;
 import Tokenizer.TokenReader;
-import Compiler.CompilerState;
-import Compiler.SymbolTable;
+import Compiler.*;
 import Types.ArrayType;
 import Types.PointerType;
 import Types.Type;
+import Types.TypeEnum;
 
 public class ArraySpec extends ASTNode {
     private ASTNode expr;
@@ -20,15 +21,24 @@ public class ArraySpec extends ASTNode {
     }
 
     @Override
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         if (getType() == null) {
             Type type = null;
             if (expr != null) {
-                if (Types.PrimType.isType(expr.getNodeType())) {
-                    type = new ArrayType(0);
+                if (Types.PrimType.isType(expr.getNodeType(cs))) {
+                    try {
+                        type = new ArrayType((int) expr.getValue());
+                    }
+                    catch (ClassCastException e) {
+                        setType(new Type(TypeEnum.UNDEF));
+                        String msg = "Type '" + expr.getNodeType(cs) + "' cannot be used for array lookups.";
+                        cs.addError(new TypeError(msg, expr.getLocation()));
+                    }
                 }
                 else {
-                    //exception
+                    setType(new Type(TypeEnum.UNDEF));
+                    String msg = "Array lookup cannot be applied to type '" + expr.getNodeType(cs) + "'";
+                    cs.addError(new TypeError(msg, expr.getLocation()));
                 }
             }
             else {
@@ -40,12 +50,11 @@ public class ArraySpec extends ASTNode {
     }
 
     @Override
-    public String getASTR(int indentDepth) {
+    public String getASTR(int indentDepth, CompilerState cs) {
         StringBuilder str = new StringBuilder("");
         str.append("[");
         if (expr != null) {
-            //str.append(expr.getTypePrefix());
-            str.append(expr.getASTR(indentDepth));
+            str.append(expr.getASTR(indentDepth, cs));
         }
         str.append("]");
         return str.toString();
@@ -81,5 +90,19 @@ public class ArraySpec extends ASTNode {
             expr = expr.foldConstants();
         }
         return this;
+    }
+
+    public Object getValue() {
+        if (expr != null) {
+            return expr.getValue();
+        }
+        return null;
+    }
+
+    public Location getLocation() {
+        if (expr != null) {
+            expr.getLocation();
+        }
+        return null;
     }
 }

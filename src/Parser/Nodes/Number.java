@@ -4,8 +4,7 @@ import Errors.SyntaxError;
 import Tokenizer.TokenReader;
 import Tokenizer.Tokens.NumberToken;
 import Tokenizer.Tokens.Token;
-import Compiler.CompilerState;
-import Compiler.SymbolTable;
+import Compiler.*;
 import Types.PrimType;
 import Types.Type;
 import Types.TypeEnum;
@@ -17,9 +16,9 @@ public class Number extends ASTNode {
         this.token = token;
     }
 
-    public String getASTR(int indentDepth) {
+    public String getASTR(int indentDepth, CompilerState cs) {
         StringBuilder str = new StringBuilder("");
-        str.append(getTypePrefix());
+        str.append(getTypePrefix(cs));
         str.append(token.getValue());
         return str.toString();
     }
@@ -34,7 +33,7 @@ public class Number extends ASTNode {
         }
     }
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         if (getType() == null) {
             setType(new PrimType(TypeEnum.SIGNED));
         }
@@ -43,5 +42,13 @@ public class Number extends ASTNode {
 
     public ASTNode foldConstants() {
         return this;
+    }
+
+    public Object getValue() {
+        return Integer.parseInt(token.getValue());
+    }
+
+    public Location getLocation() {
+        return token.getLoc();
     }
 }

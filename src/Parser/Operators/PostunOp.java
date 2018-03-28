@@ -1,5 +1,7 @@
 package Parser.Operators;
 
+import Compiler.CompilerState;
+import Errors.TypeError;
 import Parser.Nodes.ASTNode;
 import Tokenizer.Tokens.Token;
 import Types.PointerType;
@@ -11,13 +13,16 @@ public class PostunOp extends Operator {
         super(token);
     }
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         if (getType() == null) {
-            Type type = getLhs().getNodeType();
-            if (type != null) {
-                if (PointerType.isType(type) || type.getTypeEnum() == TypeEnum.UNSIGNED || type.getTypeEnum() == TypeEnum.SIGNED) {
-                    setType(type);
-                }
+            Type type = getLhs().getNodeType(cs);
+            if (PointerType.isType(type) || type.getTypeEnum() == TypeEnum.UNSIGNED || type.getTypeEnum() == TypeEnum.SIGNED) {
+                setType(type);
+            }
+            else {
+                setType(new Type(TypeEnum.UNDEF));
+                String msg = "Cannot apply operator '" + getOp() + "' to type '" + type + "'";
+                cs.addError(new TypeError(msg, getLocation()));
             }
         }
         return getType();
@@ -27,6 +32,11 @@ public class PostunOp extends Operator {
     public ASTNode foldConstants() {
         setLhs(getLhs().foldConstants());
         return this;
+    }
+
+    @Override
+    public Object getValue() {
+        return null;
     }
 
     public static boolean isOp(Token token) {

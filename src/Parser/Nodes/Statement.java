@@ -1,7 +1,6 @@
 package Parser.Nodes;
 
-import Compiler.CompilerState;
-import Compiler.SymbolTable;
+import Compiler.*;
 import Errors.SyntaxError;
 import Parser.Operators.PreunOp;
 import Tokenizer.TokenReader;
@@ -16,7 +15,6 @@ public class Statement extends ASTNode {
     private ASTNode whileStmt;
 
     public Statement() {
-        super();
         expr = null;
         block = null;
         ifStmt = null;
@@ -56,30 +54,30 @@ public class Statement extends ASTNode {
     }
 
     @Override
-    public String getASTR(int indentDepth) {
+    public String getASTR(int indentDepth, CompilerState cs) {
         StringBuilder str = new StringBuilder("");
-        String indentStr = super.getASTR(indentDepth);
+        String indentStr = super.getASTR(indentDepth, cs);
         if (expr != null) {
             str.append(indentStr);
-            str.append(expr.getASTR(indentDepth));
+            str.append(expr.getASTR(indentDepth, cs));
             str.append(";\n");
         }
         else if (ifStmt != null) {
             str.append(indentStr);
-            str.append(ifStmt.getASTR(indentDepth));
+            str.append(ifStmt.getASTR(indentDepth, cs));
             str.append("\n");
         }
         else if (whileStmt != null) {
             str.append(indentStr);
-            str.append(whileStmt.getASTR(indentDepth));
+            str.append(whileStmt.getASTR(indentDepth, cs));
             str.append("\n");
         }
-        else {
+        else if (block != null) {
             str.append(indentStr);
             str.append("{\n");
             if (block != null) {
-                str.append(block.getVSR(indentDepth+1));
-                str.append(block.getASTR(indentDepth+1));
+                str.append(block.getVSR(indentDepth+1, cs));
+                str.append(block.getASTR(indentDepth+1, cs));
             }
             str.append(indentStr);
             str.append("}\n");
@@ -141,19 +139,19 @@ public class Statement extends ASTNode {
         return PrimaryExpr.beginsPrimaryExpr(str) || str.equals("{") || PreunOp.isOp(str) || str.equals("if") || str.equals("while");
     }
 
-    public Type getNodeType() {
+    public Type getNodeType(CompilerState cs) {
         if (getType() == null) {
             if (expr != null) {
-                setType(expr.getNodeType());
+                setType(expr.getNodeType(cs));
             }
             else if (block != null) {
-                setType(block.getNodeType());
+                setType(block.getNodeType(cs));
             }
             else if (ifStmt != null) {
-                setType(ifStmt.getNodeType());
+                setType(ifStmt.getNodeType(cs));
             }
             else if (whileStmt != null) {
-                setType(whileStmt.getNodeType());
+                setType(whileStmt.getNodeType(cs));
             }
         }
         return getType();
@@ -173,5 +171,37 @@ public class Statement extends ASTNode {
             block = block.foldConstants();
         }
         return this;
+    }
+
+    public Object getValue() {
+        if (expr != null) {
+            return expr.getValue();
+        }
+        else if (ifStmt != null) {
+            return ifStmt.getValue();
+        }
+        else if (whileStmt != null) {
+            return whileStmt.getValue();
+        }
+        else if (block != null) {
+            return block.getValue();
+        }
+        return null;
+    }
+
+    public Location getLocation() {
+        if (expr != null) {
+            return expr.getLocation();
+        }
+        else if (ifStmt != null) {
+            return ifStmt.getLocation();
+        }
+        else if (whileStmt != null) {
+            return whileStmt.getLocation();
+        }
+        else if (block != null) {
+            return block.getLocation();
+        }
+        return null;
     }
 }
